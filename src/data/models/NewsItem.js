@@ -41,6 +41,9 @@ export default class NewsItem {
 
   static hideNewsItem = (id, userId) => DB.hideNewsItem(id, userId);
 
+  // Adrien : Add the id post and userId to localStorage
+  //static bookmarkNewsItem = (id, userId) => localStorage.setItem(`${userId}`, `${id});
+
   static submitNewsItem = ({ submitterId, title, text, url }) => {
     const newsItem = new NewsItem({
       id: (newPostIdCounter += 1),

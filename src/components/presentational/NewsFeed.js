@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
+//changes
+import { graphql } from 'react-apollo';
 
 import NewsTitle from '../container/NewsTitleWithData';
 import NewsDetail from '../container/NewsDetailWithData';
+//changes
+import meQuery from '../../data/queries/meQuery';
 
 const NewsFeed = (props) => {
   const nextPage = Math.ceil((props.skip || 1) / props.first) + 1;
@@ -28,6 +32,8 @@ const NewsFeed = (props) => {
           isPostScrutinyVisible={props.isPostScrutinyVisible}
           isJobListing={props.isJobListing}
           {...newsItem}
+          //Passing allong current user info
+          me={props.me}
         />,
       );
       rows.push(<tr className="spacer" key={`${newsItem.id.toString()}spacer`} style={{ height: 5 }} />);
@@ -82,6 +88,10 @@ NewsFeed.propTypes = {
   isRankVisible: PropTypes.bool,
   isUpvoteVisible: PropTypes.bool,
   currentURL: PropTypes.string.isRequired,
+  me: PropTypes.shape({
+    id: PropTypes.string,
+    karma: PropTypes.number,
+  })
 };
 NewsFeed.fragments = {
   newsItem: gql`
@@ -95,5 +105,13 @@ NewsFeed.fragments = {
     ${NewsDetail.fragments.newsItem}
   `,
 };
-
-export default NewsFeed;
+//Added the meQuery export
+export default graphql(meQuery, {
+  options: {
+    // fetchPolicy: 'cache-and-network',
+    // ssr: false,
+  },
+  props: ({ data: { me } }) => ({
+    me,
+  }),
+})(NewsFeed);
